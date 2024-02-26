@@ -1,6 +1,7 @@
 <?php include("header.php") ?>
-<section>
-    <h2>Add ToDo Item</h2>
+
+<section class="todolist-form-container">
+    <!-- Your existing content here -->
     <form action="index.php" method="POST">
         <input type="hidden" name="action" value="insert">
 
@@ -13,4 +14,5 @@
         <button type="submit">Add Item</button>
     </form>
 </section>
+
 <?php include("footer.php") ?>
