@@ -16,7 +16,7 @@ This PHP project is a ToDo List application that enables users to manage tasks b
 - **model/database.php:** PHP script for establishing a connection to the MySQL database.
 - **view/remove.php:** PHP script for handling the removal of ToDo items.
 - **.gitignore:** Configuration file for Git to ignore specific files and directories.
-- **view/add.php
+- **view/add.php** Add items to list on a separate page. Instructions said we can do this.
 
 ## Setup Instructions
 
