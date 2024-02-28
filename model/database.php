@@ -1,4 +1,6 @@
 <?php
+// database.php
+
 $dsn = "mysql:host=localhost; dbname=world";
 $username = 'root';
 // $password = '1qaz';

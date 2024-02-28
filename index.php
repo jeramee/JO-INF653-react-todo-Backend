@@ -1,29 +1,32 @@
+<!-- index.php -->
+
 <?php
+// index.php
 include_once('model/database.php');
 
-// Check if the form is submitted
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Extract form data
-    $title = $_POST['title'];
-    $description = $_POST['description'];
+// Check if the 'removedItemNum' parameter is set in the URL
+if (isset($_GET['removedItemNum'])) {
+    $removedItemNum = $_GET['removedItemNum'];
+    echo "<p>ItemNum $removedItemNum has been successfully removed.</p>";
+}
 
-    // Validate and sanitize input as needed
-    // ...
+// Remove item if 'remove' button is clicked
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['removeItemNum'])) {
+    $removedItemNum = $_POST['removeItemNum'];
 
-    // Insert into the database
+    // Remove the item from the database
     try {
-        $stmt = $GLOBALS['conn']->prepare("INSERT INTO todoitems (Title, Description) VALUES (:title, :description)");
-        $stmt->bindParam(':title', $title);
-        $stmt->bindParam(':description', $description);
+        $stmt = $GLOBALS['conn']->prepare("DELETE FROM todoitems WHERE ItemNum = :id");
+        $stmt->bindParam(':id', $removedItemNum);
         $stmt->execute();
-
-        // Redirect back to index.php after adding a new item
-        header("Location: index.php");
-        exit();
     } catch (PDOException $e) {
-        echo "Error inserting data: " . $e->getMessage();
+        echo "Error removing item: " . $e->getMessage();
         exit();
     }
+
+    // Redirect back to index.php after removing the item
+    header("Location: index.php?removedItemNum=$removedItemNum");
+    exit();
 }
 
 // Retrieve ToDo List items from the database
@@ -51,10 +54,14 @@ try {
     if (count($items) > 0) {
         foreach ($items as $item) {
             echo "<div>";
+            echo "<span>{$item['ItemNum']}</span><br>"; // Display ItemNum
             echo "<span>{$item['Title']}</span>";
             echo "<br><br> <!-- Add two line breaks for more space -->";
             echo "<span>{$item['Description']}</span><br><br>";
-            echo "<a href='remove.php?id={$item['ItemNum']}'>Remove</a>";
+            echo "<form action='index.php' method='post'>";
+            echo "<input type='hidden' name='removeItemNum' value='{$item['ItemNum']}'>";
+            echo "<button type='submit' style='color: red;'>X Remove</button>";
+            echo "</form>";
             echo "</div>";
         }
     } else {
@@ -62,21 +69,8 @@ try {
     }
     ?>
 
-    <form action="index.php" method="post">
-        <br><br> <!-- Add two line breaks for more space -->
-        <label for="title">Title:</label>
-        <br> <!-- Add a line break for space -->
-        <input type="text" id="title" name="title" required maxlength="20">
-        
-        <br><br> <!-- Add two line breaks for more space -->
+    <br><br> <!-- Add two line breaks for more space -->
+    <a href="view/add.php">Add Item</a>
 
-        <label for="description">Description:</label>
-        <br> <!-- Add a line break for space -->
-        <input type="text" id="description" name="description" required maxlength="50">
-
-        <br><br> <!-- Add two line breaks for more space -->
-
-        <button type="submit">Add</button>
-    </form>
 </body>
 </html>
